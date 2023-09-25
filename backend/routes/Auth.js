@@ -29,7 +29,7 @@ router.post("/login", async (req, res) => {
     const findUser = await Auth.findOne({
       email: req.body.email,
     });
-    
+
     if (!findUser) {
       return res.status(404).json({ message: "User Not Found" });
     }
@@ -42,6 +42,16 @@ router.post("/login", async (req, res) => {
     }
   } catch (error) {
     console.log(error);
+  }
+});
+
+router.get("/all-users", async (req, res) => {
+  try {
+    const findUsers = await Auth.find();
+    res.status(200).json({ users: findUsers });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json(error);
   }
 });
 
