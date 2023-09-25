@@ -23,7 +23,16 @@ export const authSlice = createApi({
         };
       },
     }),
+    getUsers: builder.query({
+      query: () => {
+        return {
+          url: "/api/all-users",
+          method: "GET",
+        };
+      },
+    }),
   }),
 });
 
-export const { useLoginMutation, useSignupMutation } = authSlice;
+export const { useLoginMutation, useSignupMutation, useGetUsersQuery } =
+  authSlice;
