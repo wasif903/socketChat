@@ -4,7 +4,6 @@ import ChatMid from "./ChatMid";
 
 function ChatLeft({ allUsers, selectedUser, setSelectedUser }) {
   const userData = JSON.parse(localStorage.getItem("userdata"));
-  console.log(selectedUser);
 
   return (
     <>

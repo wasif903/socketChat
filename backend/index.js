@@ -6,6 +6,7 @@ import AuthRouter from "./routes/Auth.js";
 import connectDB from "./db.js";
 import http from "http";
 import { Server } from "socket.io";
+import Chat from "./routes/Chat.js";
 
 dotenv.config();
 connectDB();
@@ -27,6 +28,8 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api", AuthRouter);
+app.use("/api", Chat);
+
 server.listen(process.env.PORT, () => {
   console.log(`Port Running On PORT: ${process.env.PORT}`);
 });
@@ -39,8 +42,7 @@ io.on("connection", (socket) => {
     socket.emit("connected");
   });
 
-  socket.on("join chat", ({room, }) => {
+  // socket.on("join chat", ({ }) => {
 
-  })
-
+  // })
 });

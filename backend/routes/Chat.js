@@ -1,6 +1,6 @@
 import express from "express";
-import Auth from "../models/Auth";
-import Chat from "../models/Chat";
+import Auth from "../models/Auth.js";
+import Chat from "../models/Chat.js";
 
 const router = express.Router();
 
@@ -24,5 +24,24 @@ router.post("/:userID/chat/:to", async (req, res) => {
     res.status(500).json(error);
   }
 });
+
+router.get("/:userID/get-chats/:to", async (req, res) => {
+  try {
+    const { userID, to } = req.params;
+    
+    const chats = await Chat.find({
+      $or: [
+        { userID: userID, to: to },
+        { userID: to, to: userID }
+      ]
+    });
+
+    res.status(200).json(chats);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json(error);
+  }
+});
+
 
 export default router;

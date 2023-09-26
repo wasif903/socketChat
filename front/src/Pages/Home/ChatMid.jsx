@@ -1,10 +1,37 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Form } from "react-bootstrap";
+import { useChatMutation } from "../../Redux/chat/ChatSlice";
 
-function ChatMid({ selectedUser }) {
-  console.log(selectedUser);
-
+function ChatMid({ selectedUser, messageData, fetchMessages }) {
+  const userData = JSON.parse(localStorage.getItem("userdata"));
   const [message, setMessage] = useState("");
+
+  useEffect(() => {}, []);
+
+  const [chat] = useChatMutation();
+
+  const onMessage = async () => {
+    try {
+      if (message === "") {
+        return alert("Message Empty");
+      }
+      const res = await chat({
+        userID: userData._id,
+        to: selectedUser._id,
+        message: message,
+      });
+
+      if (!res.error) {
+        setMessage("");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  console.log("selectedUser:", selectedUser);
+  console.log("messageData:", messageData);
+  console.log("userData:", userData);
 
   return (
     <>
@@ -18,25 +45,38 @@ function ChatMid({ selectedUser }) {
       </div>
 
       <div style={{ height: "70vh" }} className="bg-danger">
-        <div className="d-flex">
-          <div
-            className="bg-success"
-            style={{ width: "40px", height: "40px", borderRadius: "50%" }}
-          ></div>
-          <p className="bg-success text-white ms-2 px-3 py-2 rounded">
-            Helloo Text
-          </p>
-        </div>
-
-        <div className="d-flex justify-content-end">
-          <p className="bg-primary text-white me-2 px-3 py-2 rounded">
-            Helloo Text
-          </p>
-          <div
-            className="bg-primary"
-            style={{ width: "40px", height: "40px", borderRadius: "50%" }}
-          ></div>
-        </div>
+        {selectedUser &&
+          messageData.map((item) =>
+            item.userID === userData._id ? (
+              <div key={item._id} className="d-flex justify-content-end">
+                <p className="bg-primary text-white me-2 px-3 py-2 rounded">
+                  {item?.message}
+                </p>
+                <div
+                  className="bg-primary"
+                  style={{
+                    width: "40px",
+                    height: "40px",
+                    borderRadius: "50%",
+                  }}
+                ></div>
+              </div>
+            ) : (
+              <div key={item._id} className="d-flex">
+                <div
+                  className="bg-success"
+                  style={{
+                    width: "40px",
+                    height: "40px",
+                    borderRadius: "50%",
+                  }}
+                ></div>
+                <p className="bg-success text-white ms-2 px-3 py-2 rounded">
+                  {item?.message}
+                </p>
+              </div>
+            )
+          )}
       </div>
 
       <div className="d-flex justify-content-center align-items-center my-3">
@@ -57,7 +97,9 @@ function ChatMid({ selectedUser }) {
           </Form>
         </div>
         <div>
-          <button className="btn btn-success">Send</button>
+          <button onClick={onMessage} className="btn btn-success">
+            Send
+          </button>
         </div>
       </div>
     </>
